@@ -1,38 +1,35 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { ChevronDown, RadioTower } from "lucide-react";
-import type { MouseEvent } from "react";
+import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { FloatingElement } from "@/components/motion/FloatingElement";
 import { smoothEase } from "@/components/motion/variants";
 import { landingImages } from "@/data/images";
+import { Tilt3D } from "@/components/motion/Tilt3D";
 
 export function HeroSection() {
   const reduceMotion = useReducedMotion();
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const smoothX = useSpring(pointerX, { stiffness: 60, damping: 20 });
-  const smoothY = useSpring(pointerY, { stiffness: 60, damping: 20 });
-  const phoneX = useTransform(smoothX, [-0.5, 0.5], [-9, 9]);
-  const phoneY = useTransform(smoothY, [-0.5, 0.5], [-7, 7]);
-  const lightX = useTransform(smoothX, [-0.5, 0.5], [18, -18]);
-
-  function handlePointerMove(event: MouseEvent<HTMLElement>) {
-    if (reduceMotion || !window.matchMedia("(pointer: fine)").matches) return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    pointerX.set((event.clientX - bounds.left) / bounds.width - 0.5);
-    pointerY.set((event.clientY - bounds.top) / bounds.height - 0.5);
-  }
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const smoothScroll = useSpring(scrollYProgress, { stiffness: 100, damping: 28, mass: 0.35 });
+  const visualY = useTransform(smoothScroll, [0, 1], [0, -42]);
+  const visualScale = useTransform(smoothScroll, [0, 0.85], [1, 0.96]);
+  const visualOpacity = useTransform(smoothScroll, [0, 0.72, 1], [1, 0.88, 0.45]);
+  const wavesY = useTransform(smoothScroll, [0, 1], [0, -24]);
+  const backgroundY = useTransform(smoothScroll, [0, 1], [0, -8]);
 
   return (
-    <section id="inicio" onMouseMove={handlePointerMove} className="relative isolate min-h-[780px] overflow-hidden bg-[#351066] pt-[76px] text-white lg:min-h-[820px]">
-      <Image src={landingImages.heroBackground} alt="" fill priority sizes="100vw" className="absolute inset-0 -z-30 object-cover object-center opacity-70" />
+    <section id="inicio" ref={sectionRef} className="relative isolate min-h-[780px] overflow-hidden bg-[#351066] pt-[76px] text-white lg:min-h-[820px]">
+      <motion.div className="absolute inset-0 -z-30" style={reduceMotion ? undefined : { y: backgroundY }}>
+        <Image src={landingImages.heroBackground} alt="" fill priority sizes="100vw" className="object-cover object-center opacity-70" />
+      </motion.div>
       <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(38,7,76,.96)_0%,rgba(48,10,91,.8)_43%,rgba(65,8,103,.18)_75%)]" />
       <div className="absolute -left-32 top-24 -z-10 size-[420px] rounded-full bg-fuchsia-500/20 blur-[100px]" />
-      <motion.div className="absolute inset-0 -z-10" style={reduceMotion ? undefined : { x: lightX }} aria-hidden="true">
+      <motion.div className="absolute inset-0 -z-10" style={reduceMotion ? undefined : { y: wavesY }} aria-hidden="true">
         <motion.div
           className="absolute inset-0"
           animate={reduceMotion ? undefined : { y: [0, -10, 0], scale: [1, 1.025, 1] }}
@@ -70,13 +67,21 @@ export function HeroSection() {
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.86, x: 70, rotate: 4 }}
           animate={{ opacity: 1, scale: 1, x: 0, rotate: 0 }}
           transition={{ duration: reduceMotion ? 0.2 : .95, delay: reduceMotion ? 0 : 0.3, ease: smoothEase }}
-          style={reduceMotion ? undefined : { x: phoneX, y: phoneY }}
           className="relative mx-auto h-[365px] w-full max-w-[480px] sm:h-[450px] lg:h-[650px] lg:max-w-[590px]"
         >
-          <div className="absolute left-1/2 top-1/2 size-[75%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-fuchsia-400/25 blur-[70px]" />
-          <FloatingElement distance={14} className="relative size-full">
-            <Image src={landingImages.heroPhone} alt="Smartphone exibindo uma experiência digital conectada" fill priority sizes="(max-width: 768px) 90vw, 45vw" className="object-contain drop-shadow-[0_35px_60px_rgba(17,0,35,.55)]" />
-          </FloatingElement>
+          <motion.div className="size-full" style={reduceMotion ? undefined : { y: visualY, scale: visualScale, opacity: visualOpacity }}>
+          <Tilt3D maxRotateX={7} maxRotateY={9} depth={76} perspective={1250} className="size-full" innerClassName="rounded-[44px]">
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 size-[72%] rounded-full bg-fuchsia-400/25 blur-[70px]"
+              style={{ transform: "translate(-50%, -50%) translateZ(-36px)" }}
+            />
+            <FloatingElement distance={14} className="relative size-full">
+              <Image src={landingImages.heroPhone} alt="Smartphone exibindo uma experiência digital conectada" fill priority sizes="(max-width: 768px) 90vw, 45vw" className="object-contain drop-shadow-[0_35px_60px_rgba(17,0,35,.55)]" />
+            </FloatingElement>
+            <span aria-hidden="true" className="absolute right-[18%] top-[20%] size-2 rounded-full bg-white/80 shadow-[0_0_18px_5px_rgba(255,194,245,.45)]" style={{ transform: "translateZ(28px)" }} />
+          </Tilt3D>
+          </motion.div>
         </motion.div>
       </Container>
       <a href="#beneficios-rapidos" aria-label="Ir para os benefícios" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-[10px] font-bold uppercase tracking-[.2em] text-white/55 sm:flex">

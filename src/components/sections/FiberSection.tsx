@@ -102,7 +102,7 @@ export function FiberSection() {
           </div>
           <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl shadow-black/35">
             <div className="relative aspect-[1.35] overflow-hidden">
-              <Image ref={imageRef} src={landingImages.fiberRoom} alt="Sala conectada com internet fibra" fill sizes="(max-width: 1024px) 92vw, 48vw" className="fiber-image object-cover" onLoad={() => ScrollTrigger.refresh()} />
+              <Image ref={imageRef} src={landingImages.fiberRoom} alt="Sala conectada com internet fibra" fill sizes="(max-width: 1024px) 92vw, 48vw" loading="eager" className="fiber-image object-cover" onLoad={() => ScrollTrigger.refresh()} />
               <div className="absolute inset-0 bg-gradient-to-t from-[#160923]/55 to-transparent" />
             </div>
             <div ref={progressRef} className="fiber-progress absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400" />

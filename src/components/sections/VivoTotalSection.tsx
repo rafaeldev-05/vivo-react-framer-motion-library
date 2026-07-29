@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StaggerContainer, StaggerItem } from "@/components/motion/Stagger";
 import { landingImages } from "@/data/images";
+import { Tilt3D } from "@/components/motion/Tilt3D";
 
 export function VivoTotalSection() {
   const reduceMotion = useReducedMotion();
@@ -20,9 +21,15 @@ export function VivoTotalSection() {
     <section id="total" className="overflow-hidden bg-[#f8f4fb] py-24 sm:py-32">
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-2">
-          <motion.div ref={visualRef} style={reduceMotion ? undefined : { y: visualY }} initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .9, x: -46, rotate: -2 }} whileInView={{ opacity: 1, scale: 1, x: 0, rotate: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .85, ease: [0.22, 1, .36, 1] }} className="relative min-h-[320px] sm:min-h-[460px]">
-            <motion.div animate={reduceMotion ? undefined : { scale: [1, 1.08, 1], x: [0, 12, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute inset-[10%] rounded-full bg-gradient-to-br from-violet-300/35 via-blue-200/25 to-fuchsia-300/40 blur-[70px]" />
-            <Image src={landingImages.vivoTotalDevices} alt="Ecossistema de celular, fibra e entretenimento integrado" fill sizes="(max-width: 1024px) 92vw, 48vw" className="relative object-contain drop-shadow-[0_35px_50px_rgba(59,18,91,.18)]" />
+          <motion.div ref={visualRef} style={reduceMotion ? undefined : { y: visualY }} className="relative h-[320px] sm:h-[460px]">
+            <motion.div initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .9, x: -46, rotateY: -3 }} whileInView={{ opacity: 1, scale: 1, x: 0, rotateY: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .85, ease: [0.22, 1, .36, 1] }} className="size-full" style={{ perspective: "1200px" }}>
+              <Tilt3D maxRotateX={2.5} maxRotateY={3.5} depth={54} perspective={1250} className="size-full" innerClassName="rounded-[40px]">
+                <motion.div animate={reduceMotion ? undefined : { scale: [1, 1.08, 1], x: [0, 12, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute inset-[10%] rounded-full bg-gradient-to-br from-violet-300/35 via-blue-200/25 to-fuchsia-300/40 blur-[70px]" style={{ z: -32 }} />
+                <span aria-hidden="true" className="absolute left-[12%] top-[20%] size-3 rounded-full bg-violet-300/70 shadow-[0_0_24px_8px_rgba(167,139,250,.28)]" style={{ transform: "translateZ(22px)" }} />
+                <span aria-hidden="true" className="absolute bottom-[22%] right-[14%] size-2 rounded-full bg-fuchsia-300/80 shadow-[0_0_20px_6px_rgba(244,114,182,.3)]" style={{ transform: "translateZ(34px)" }} />
+                <Image src={landingImages.vivoTotalDevices} alt="Ecossistema de celular, fibra e entretenimento integrado" fill sizes="(max-width: 1024px) 92vw, 48vw" className="relative object-contain drop-shadow-[0_35px_50px_rgba(59,18,91,.18)]" />
+              </Tilt3D>
+            </motion.div>
           </motion.div>
           <div>
             <SectionHeading eyebrow="Vivo Total" title="Celular, fibra e entretenimento juntos." description="Uma experiência integrada para conectar seus dispositivos, sua casa e todos os seus momentos." />
