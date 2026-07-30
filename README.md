@@ -1,5 +1,7 @@
 # Vivo Connect — Concept Landing Page
 
+**Live Website:** [https://vivo-page.vercel.app/](https://vivo-page.vercel.app/)
+
 A premium, responsive frontend landing page inspired by the visual language of Vivo, a Brazilian telecommunications company.
 
 The project presents a conceptual digital experience for mobile plans, 5G connectivity, fiber internet, smartphones, entertainment, and integrated services. It was created as a frontend demonstration and is not affiliated with, endorsed by, or connected to Vivo.
